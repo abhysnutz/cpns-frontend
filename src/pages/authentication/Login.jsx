@@ -1,18 +1,50 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router';
 
 export default function Login() {
+    const [formData, setFormData] = useState({});
+    const [error, setError] = useState(0);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) navigate('/')
+    })
     const Validation = ({err}) => {
-        return (
-            <div className="mb-4">
-                <div className="font-medium text-red-600">
-                    Whoops! Terjadi kesalahan.
+        if(err){
+            return (
+                <div className="mb-4">
+                    <div className="font-medium text-red-600">
+                        Whoops! Terjadi kesalahan.
+                    </div>
+                    <ul className="mt-3 list-disc list-inside text-sm text-red-600">
+                        <li>{err}</li>
+                    </ul>
                 </div>
-                <ul className="mt-3 list-disc list-inside text-sm text-red-600">
-                    <li>Kredensial tersebut tidak cocok dengan data kami.</li>
-                    <li>{err}</li>
-                </ul>
-            </div>
-        )
+            )
+        }
+    }
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/login`,formData)
+            .then((response) => {
+                console.log(response.data);
+                if(response.data.token){
+                    localStorage.setItem('token', response.data.token);
+                    navigate('/')
+                }else{
+                    setError(response.data.message)
+                }
+            }).catch((err) => {
+                setError(err.message)
+            })
+    }
+
+    const handleChange = (e) => {
+        const {name,value} = e.target
+        setFormData({...formData, [name]:value})
+        console.log(formData);
     }
 
     return (
@@ -25,14 +57,14 @@ export default function Login() {
             </div>
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <Validation err={'errorxxx'}/>
-                    <form className="space-y-5" method="POST" action="#">
+                    <Validation err={error}/>
+                    <form className="space-y-5" method="POST" onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                                 Email
                             </label>
                             <div className="mt-1">
-                                <input  id="email" name="email" type="email" autoComplete="email" required className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                                <input id="email" name="email" type="email" autoComplete="email" required onChange={handleChange} className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                             </div>
                         </div>
                         <div>
@@ -40,7 +72,7 @@ export default function Login() {
                                 Password
                             </label>
                             <div className="mt-1">
-                                <input id="password" name="password" type="password" autoComplete="current-password" required className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                                <input id="password" name="password" type="password" autoComplete="current-password" required onChange={handleChange} className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                             </div>
                         </div>
                         <div className="flex items-center justify-between">
