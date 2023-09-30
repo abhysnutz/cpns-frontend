@@ -52,7 +52,7 @@ export default function Signin() {
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <img className="mx-auto h-12 w-auto" src="https://ayopppk.com/assets/logo/ayopppk.svg" alt="Login AYOPPPK" />
+                {/* <img className="mx-auto h-12 w-auto" src="https://ayopppk.com/assets/logo/ayopppk.svg" alt="Login AYOPPPK" /> */}
                 <h2 className="mt-6 text-center text-2xl font-extrabold text-gray-900">
                     Login ke Akun Anda
                 </h2>
