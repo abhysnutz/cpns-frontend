@@ -1,11 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
-export default function Login() {
+export default function Signin() {
     const [formData, setFormData] = useState({});
     const [error, setError] = useState(0);
     const navigate = useNavigate();
+
 
     useEffect(() => {
         if (localStorage.getItem('token')) navigate('/')
@@ -86,9 +88,9 @@ export default function Login() {
                         <div className="flex items-center justify-between">
                             <div className="text-sm">
                                 Belum punya akun? <br/>
-                                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                <Link to='/signup' className="font-medium text-indigo-600 hover:text-indigo-500">
                                     Daftar dulu, yuk!
-                                </a>
+                                </Link>
                             </div>
                             <div className="text-sm text-right">
                                 Lupa password? <br />
