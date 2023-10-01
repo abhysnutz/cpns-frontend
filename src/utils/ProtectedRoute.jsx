@@ -1,12 +1,25 @@
+import axios from 'axios';
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
+import jwt_decode from 'jwt-decode'
 
 export default function ProtectedRoute ({ element }) {
-  const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    const location = useLocation()
 
-  if (!token) return <Navigate to="/auth/login" />;
+    if (!token) return <Navigate to="/signin" />;
 
-  // You can add additional checks here, like verifying the token's validity
+    const decoded = jwt_decode(token);
+    const verify = decoded.verify
 
-  return element;
+    if(verify) {
+        if(location.pathname == '/app/verify-email') return <Navigate to="/app" />;
+        return element;
+    }else{
+        if(location.pathname != '/app/verify-email'){
+            return <Navigate to="/app/verify-email" />;
+        }else{
+            return element;
+        }
+    }
 };

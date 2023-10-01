@@ -4,8 +4,10 @@ import Signup from './pages/authentication/Signup';
 import Signin from './pages/authentication/Signin';
 import VerifyMail from './pages/authentication/VerifyMail';
 import LayoutUser from './pages/app/Layout';
-import Verify from './pages/app/Verify';
-
+import AppVerify from './pages/app/Verify';
+import AppHome from './pages/app/Home';
+import ProtectedRoute from './utils/protectedRoute';
+// import jwt from 'jsonwebtoken'
 function App() {
     const Home = () => {
         return (<h1>Hello Home</h1>);
@@ -26,11 +28,9 @@ function App() {
                 </Route> */}
 
                 <Route element={<LayoutUser/>}>
-                    <Route path="/app/verify-email" element={<Verify/>}/>
-
+                    <Route path="/app" element={<ProtectedRoute element={<AppHome />} />}/>
+                    <Route path="/app/verify-email" element={<ProtectedRoute element={<AppVerify />} />}/>
                 </Route>
-
-
             </Routes>
         </Router>
     )

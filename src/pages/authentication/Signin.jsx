@@ -8,7 +8,6 @@ export default function Signin() {
     const [error, setError] = useState(0);
     const navigate = useNavigate();
 
-
     useEffect(() => {
         if (localStorage.getItem('token')) navigate('/')
     })
@@ -34,7 +33,7 @@ export default function Signin() {
                 console.log(response.data);
                 if(response.data.token){
                     localStorage.setItem('token', response.data.token);
-                    navigate('/')
+                    navigate('/app')
                 }else{
                     setError(response.data.message)
                 }

@@ -15,7 +15,6 @@ export default function Layout() {
     return (
         <div>
             <div className="h-screen flex overflow-hidden bg-gray-100">
-                
                 {/* <Useless/> */}
                 <div className="lg:hidden" style={{ display:isMenuAvailable }}>
                     <MobileMenu onStateChange={handleClick}/>
