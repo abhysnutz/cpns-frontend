@@ -42,8 +42,10 @@ export default function Signup() {
                     document.getElementById('password').value = null
                     document.getElementById('password_confirmation').value = null
                     return setErrors(response.data.error)
+                }else{
+                    localStorage.setItem('token', response.data.token);
+                    return navigate('/app/verify-email')
                 }
-                return navigate('/')
             }).catch((err) => {
                 setErrors([err.message])
             })

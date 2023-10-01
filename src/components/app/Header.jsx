@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export default function Header({onStateChange}) {
     const [isMenu, setIsMenu] = useState(false)
-    
+    const navigate = useNavigate()
     const handleClick = () => setIsMenu(!isMenu)
 
+    const Logout = () => {
+        navigate('logout')
+    }
     return (
         <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
             <button className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 lg:hidden sm:flex sm:items-center hidden" onClick={onStateChange}>
@@ -30,7 +34,7 @@ export default function Header({onStateChange}) {
                             isMenu ?
                                 <div role="menu" aria-orientation="vertical" aria-labelledby="user-menu" className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5" >
                                     <a role="menuitem" href="https://ayopppk.com/user/akun" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Akun Saya</a>
-                                    <a href="#" role="menuitem" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Keluar</a>
+                                    <a href="#" role="menuitem" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={Logout}>Keluar</a>
                                 </div>
                             :
                                 ''

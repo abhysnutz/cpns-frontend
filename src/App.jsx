@@ -7,6 +7,7 @@ import LayoutUser from './pages/app/Layout';
 import AppVerify from './pages/app/Verify';
 import AppHome from './pages/app/Home';
 import ProtectedRoute from './utils/protectedRoute';
+import Logout from './pages/authentication/Logout';
 // import jwt from 'jsonwebtoken'
 function App() {
     const Home = () => {
@@ -17,20 +18,20 @@ function App() {
         <Router>
             <Routes>
                 <Route path="/" element={<Home/>}/>
+
+                {/* START AUTHENTIKASI */}
                 <Route path="/signin" element={<Signin/>}/>
                 <Route path="/signup" element={<Signup/>}/>
+                <Route path="/logout" element={<Logout/>}/>
                 <Route path="/verify-email" element={<VerifyMail/>}/>
-                
-                {/* <Route element={<LayoutDashboard/>}>
-                    <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
-                    <Route path="/dashboard/soal" element={<ProtectedRoute element={<Soal />} />} />
-                    <Route path="/dashboard/profile" element={<ProtectedRoute element={<Profile />} />} />
-                </Route> */}
+                {/* END AUTHENTIKASI */}
 
+                {/* START APP */}
                 <Route element={<LayoutUser/>}>
                     <Route path="/app" element={<ProtectedRoute element={<AppHome />} />}/>
                     <Route path="/app/verify-email" element={<ProtectedRoute element={<AppVerify />} />}/>
                 </Route>
+                {/* END APP */}
             </Routes>
         </Router>
     )

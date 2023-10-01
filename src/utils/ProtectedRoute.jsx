@@ -10,16 +10,16 @@ export default function ProtectedRoute ({ element }) {
     if (!token) return <Navigate to="/signin" />;
 
     const decoded = jwt_decode(token);
+    // console.log(`Token => ${token}`);
+    // console.log(decoded);
+
     const verify = decoded.verify
 
     if(verify) {
-        if(location.pathname == '/app/verify-email') return <Navigate to="/app" />;
+        if(location.pathname == '/app/verify-email' || location.pathname == '/signin' || location.pathname == '/signup') return <Navigate to="/app" />;
         return element;
     }else{
-        if(location.pathname != '/app/verify-email'){
-            return <Navigate to="/app/verify-email" />;
-        }else{
-            return element;
-        }
+        if(location.pathname != '/app/verify-email') return <Navigate to="/app/verify-email" />;
+        return element;
     }
 };

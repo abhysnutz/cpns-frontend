@@ -1,11 +1,9 @@
 import axios from 'axios';
 import React, { useEffect } from 'react'
-import { useParams } from 'react-router';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 export default function VerifyMail() {
-    let status = true;
-    // let {token} = useParams()
-    
+    const navigate = useNavigate();
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const jwtToken = urlParams.get('tokenauth'); // Assuming 'jwt' is the parameter name
@@ -17,7 +15,13 @@ export default function VerifyMail() {
         try {
             await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/mail-verify`,{token})
             .then(response => {
-                console.log(response.data);
+                const token = localStorage.getItem('token');
+
+                if(token) localStorage.removeItem('token');
+
+                localStorage.setItem('token', response.data.token);
+
+                return navigate('/app')
             })
         } catch (error) {
             console.log(error);        
