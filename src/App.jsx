@@ -8,6 +8,7 @@ import AppVerify from './pages/app/Verify';
 import AppHome from './pages/app/Home';
 import ProtectedRoute from './utils/protectedRoute';
 import Logout from './pages/authentication/Logout';
+import AppAccount from './pages/app/Account';
 // import jwt from 'jsonwebtoken'
 function App() {
     const Home = () => {
@@ -22,13 +23,13 @@ function App() {
                 {/* START AUTHENTIKASI */}
                 <Route path="/signin" element={<Signin/>}/>
                 <Route path="/signup" element={<Signup/>}/>
-                <Route path="/logout" element={<Logout/>}/>
                 <Route path="/verify-email" element={<VerifyMail/>}/>
                 {/* END AUTHENTIKASI */}
 
                 {/* START APP */}
                 <Route element={<LayoutUser/>}>
                     <Route path="/app" element={<ProtectedRoute element={<AppHome />} />}/>
+                    <Route path="/app/akun" element={<ProtectedRoute element={<AppAccount />} />}/>
                     <Route path="/app/verify-email" element={<ProtectedRoute element={<AppVerify />} />}/>
                 </Route>
                 {/* END APP */}

@@ -9,7 +9,7 @@ export default function Signin() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (localStorage.getItem('token')) navigate('/')
+        if (localStorage.getItem('token')) navigate('/app')
     })
     const Validation = ({err}) => {
         if(err){
@@ -30,7 +30,6 @@ export default function Signin() {
         e.preventDefault()
         await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/login`,formData)
             .then((response) => {
-                console.log(response.data);
                 if(response.data.token){
                     localStorage.setItem('token', response.data.token);
                     navigate('/app')
@@ -45,7 +44,6 @@ export default function Signin() {
     const handleChange = (e) => {
         const {name,value} = e.target
         setFormData({...formData, [name]:value})
-        console.log(formData);
     }
 
     return (

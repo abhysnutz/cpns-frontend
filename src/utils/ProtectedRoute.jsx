@@ -10,8 +10,8 @@ export default function ProtectedRoute ({ element }) {
     if (!token) return <Navigate to="/signin" />;
 
     const decoded = jwt_decode(token);
-    // console.log(`Token => ${token}`);
-    // console.log(decoded);
+    console.log(`Token => ${token}`);
+    console.log(decoded);
 
     const verify = decoded.verify
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import style from './Signup.module.css'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
@@ -8,6 +8,10 @@ export default function Signup() {
     const [isSubmit, setIsSubmit] = useState(false);
     const [errors, setErrors] = useState([])
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) navigate('/app')
+    })
 
     const Validation = ({error}) => {
         if(error.length){
@@ -35,20 +39,35 @@ export default function Signup() {
         e.preventDefault();
         setIsSubmit(true)
         
-        await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/user`,formData)
-            .then((response) => {
-                if(!response.data.success) {
-                    setIsSubmit(false)
-                    document.getElementById('password').value = null
-                    document.getElementById('password_confirmation').value = null
-                    return setErrors(response.data.error)
-                }else{
-                    localStorage.setItem('token', response.data.token);
-                    return navigate('/app/verify-email')
-                }
-            }).catch((err) => {
-                setErrors([err.message])
-            })
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/user`,formData);
+            if(!response.data.success) {
+                setIsSubmit(false)
+                return setErrors(response.data.error)
+            }else{
+                localStorage.setItem('token', response.data.token);
+                return navigate('/app/verify-email')
+            }
+        } catch (err) {
+            setErrors([err.message])
+            setIsSubmit(false)
+        }
+
+        // await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/user`,formData)
+        //     .then((response) => {
+        //         if(!response.data.success) {
+        //             setIsSubmit(false)
+        //             document.getElementById('password').value = null
+        //             document.getElementById('password_confirmation').value = null
+        //             return setErrors(response.data.error)
+        //         }else{
+        //             localStorage.setItem('token', response.data.token);
+        //             return navigate('/app/verify-email')
+        //         }
+        //     }).catch((err) => {
+        //         setErrors([err.message])
+        //         setIsSubmit(false)
+        //     })
     }
 
     return (

@@ -1,13 +1,12 @@
 import axios from 'axios';
-import React, { useEffect } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 export default function VerifyMail() {
     const navigate = useNavigate();
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const jwtToken = urlParams.get('tokenauth'); // Assuming 'jwt' is the parameter name
-
+        const jwtToken = urlParams.get('tokenauth');
         if (jwtToken) vm(jwtToken)
     },[])
     

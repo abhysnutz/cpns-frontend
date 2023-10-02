@@ -1,10 +1,31 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import TokenVerify from '../../utils/TokenVerify'
+import jwt_decode from 'jwt-decode'
+import axios from 'axios'
 
 export default function Verify() {
+    const [status, setStatus] = useState(null)
+    const [isResend, setIsResend] = useState(false);
+
     useEffect(() => {
         TokenVerify()
     })
+
+    const reSend = async () => {
+        const token = localStorage.getItem('token');
+        const decoded = jwt_decode(token);
+        setIsResend(true)
+        
+        await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/resend-token`,{id:decoded.userId})
+            .then(response => {
+                setIsResend(false)
+                setStatus(response.data.message)
+            })
+            .catch(err => {
+                console.log(err.message);
+                setStatus(response.data.message)
+            })
+    }
     return (
         <main tabIndex="0" className="flex-1 relative overflow-y-auto focus:outline-none">
             <div className="py-6">
@@ -30,14 +51,31 @@ export default function Verify() {
                                         </p>
                                     </div>
                                     <div className="sm:text-center mt-5">
-                                        <button type="button" className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-400 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="-ml-1 mr-3 h-5 w-5">
-                                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                                            </svg>
-                                            Kirim Ulang Link Verifikasi
-                                        </button>
+                                        {
+                                            !isResend ?
+                                                <button type="button" className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-400 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={reSend}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="-ml-1 mr-3 h-5 w-5">
+                                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                                                    </svg>
+                                                    Kirim Ulang Link Verifikasi
+                                                </button>
+                                            :
+                                                <p className="text-white">Tunggu sebentar..</p>
+                                        }
                                     </div>
+                                    {
+                                        status != '' ? 
+                                            <p className="text-center mt-4 text-indigo-200">
+                                                {status}
+                                            </p>
+                                        :
+                                        ''
+                                    }
+                                        {/* Silakan coba lagi dalam 21 detik. */}
+                                    {/* <p class="text-center mt-4 text-indigo-200">
+                                        Email verifikasi berhasil dikirim. Silakan periksa kotak masuk dan spam.
+                                    </p> */}
                                 </div>
                             </div>
                         </div>
