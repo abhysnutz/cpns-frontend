@@ -52,22 +52,6 @@ export default function Signup() {
             setErrors([err.message])
             setIsSubmit(false)
         }
-
-        // await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/user`,formData)
-        //     .then((response) => {
-        //         if(!response.data.success) {
-        //             setIsSubmit(false)
-        //             document.getElementById('password').value = null
-        //             document.getElementById('password_confirmation').value = null
-        //             return setErrors(response.data.error)
-        //         }else{
-        //             localStorage.setItem('token', response.data.token);
-        //             return navigate('/app/verify-email')
-        //         }
-        //     }).catch((err) => {
-        //         setErrors([err.message])
-        //         setIsSubmit(false)
-        //     })
     }
 
     return (
