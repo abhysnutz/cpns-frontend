@@ -2,30 +2,18 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
+import AuthNotification from '../../components/app/authentication/Notification';
 
 export default function Signin() {
     const [formData, setFormData] = useState({});
-    const [error, setError] = useState(0);
+    const [notifs, setNotifs] = useState([]);
+    const [isNotifSuccess, setIsNotifSuccess] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (localStorage.getItem('token')) navigate('/app')
     })
-    const Validation = ({err}) => {
-        if(err){
-            return (
-                <div className="mb-4">
-                    <div className="font-medium text-red-600">
-                        Whoops! Terjadi kesalahan.
-                    </div>
-                    <ul className="mt-3 list-disc list-inside text-sm text-red-600">
-                        <li>{err}</li>
-                    </ul>
-                </div>
-            )
-        }
-    }
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/login`,formData)
@@ -34,10 +22,10 @@ export default function Signin() {
                     localStorage.setItem('token', response.data.token);
                     navigate('/app')
                 }else{
-                    setError(response.data.message)
+                    setNotifs([response.data.error])
                 }
             }).catch((err) => {
-                setError(err.message)
+                setNotifs(err.message)
             })
     }
 
@@ -56,7 +44,7 @@ export default function Signin() {
             </div>
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <Validation err={error}/>
+                    <AuthNotification notifs={notifs} isSuccess={isNotifSuccess}/>
                     <form className="space-y-5" method="POST" onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">

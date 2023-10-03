@@ -23,7 +23,10 @@ export default function VerifyMail() {
                 return navigate('/app')
             })
         } catch (error) {
-            console.log(error);        
+            console.log(error);   
+            setTimeout(() => {
+                navigate('/app')
+            }, 2000);     
         }
     }
 }

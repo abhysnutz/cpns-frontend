@@ -10,6 +10,7 @@ import ProtectedRoute from './utils/protectedRoute';
 import Logout from './pages/authentication/Logout';
 import AppAccount from './pages/app/Account';
 import ForgotPassword from './pages/authentication/ForgotPassword';
+import ResetPassword from './pages/authentication/ResetPassword';
 // import jwt from 'jsonwebtoken'
 function App() {
     const Home = () => {
@@ -23,8 +24,10 @@ function App() {
 
                 {/* START AUTHENTIKASI */}
                 <Route path="/signin" element={<Signin/>}/>
+                
                 <Route path="/signup" element={<Signup/>}/>
                 <Route path="/forgot-password" element={<ForgotPassword/>}/>
+                <Route path="/reset-password/:signature" element={<ResetPassword/>}/>
                 <Route path="/verify-email" element={<VerifyMail/>}/>
                 {/* END AUTHENTIKASI */}
 
