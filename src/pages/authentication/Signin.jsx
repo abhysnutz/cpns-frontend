@@ -3,9 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import AuthNotification from '../../components/app/authentication/Notification';
+import style from './Signup.module.css'
 
 export default function Signin() {
     const [formData, setFormData] = useState({});
+    const [isSubmit, setIsSubmit] = useState(false);
     const [notifs, setNotifs] = useState([]);
     const [isNotifSuccess, setIsNotifSuccess] = useState(false);
     const navigate = useNavigate();
@@ -16,17 +18,22 @@ export default function Signin() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/login`,formData)
-            .then((response) => {
-                if(response.data.token){
-                    localStorage.setItem('token', response.data.token);
-                    navigate('/app')
-                }else{
-                    setNotifs([response.data.error])
-                }
-            }).catch((err) => {
-                setNotifs(err.message)
-            })
+        setIsSubmit(true)
+
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/login`,formData)
+            if(response.data.token){
+                localStorage.setItem('token', response.data.token);
+                navigate('/app')
+            }else{
+                setIsSubmit(false)
+                setNotifs([response.data.error])
+            }
+        } catch (err) {
+            setNotifs([err.message])
+            setIsSubmit(false)
+        }
+           
     }
 
     const handleChange = (e) => {
@@ -85,9 +92,19 @@ export default function Signin() {
                             </div>
                         </div>
                         <div>
-                            <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                Masuk
-                            </button>
+                            {
+                                !isSubmit ? 
+                                    <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Masuk
+                                    </button>
+                                :
+                                <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 items-center bg-indigo-300 hover:bg-indigo-300 focus:ring-indigo-100">
+                                    <span className="flex btnDisabled">
+                                        <span style={{ paddingRight: 50 }}>Tunggu sebentar</span>
+                                        <img src="https://ayopppk.com/assets/loading/Pulse-1s-200px.svg" className={style.transform} alt="" />
+                                    </span>
+                                </button>
+                            }
                         </div>
                     </form>
                 </div>

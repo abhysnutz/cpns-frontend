@@ -22,7 +22,6 @@ export default function Verify() {
                 setStatus(response.data.message)
             })
             .catch(err => {
-                console.log(err.message);
                 setStatus(response.data.message)
             })
     }

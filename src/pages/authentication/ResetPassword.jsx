@@ -1,67 +1,68 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'
+import AuthNotification from '../../components/app/authentication/Notification';
+import style from './Signup.module.css'
 
 export default function ResetPassword() {
     const [email, setEmail] = useState('')
     const [formData, setFormData] = useState({'email':'','password':'','password_confirmation':''})
-    const [errors, setErrors] = useState([]);
+    const [isSubmit, setIsSubmit] = useState(false);
+    const [notifs, setNotifs] = useState([]);
+    const [isNotifSuccess, setIsNotifSuccess] = useState(false);
     const [isAvailable, setIsAvailable] = useState(false);
+    const navigate = useNavigate();
     let {signature} = useParams()
 
     useEffect(() => {
+        if (localStorage.getItem('token')) return navigate('/app')
         getResetPassword(signature)
     },[])
-
-    const Validation = ({error}) => {
-        if(error.length){
-            return (
-                <div className="mb-4">
-                    <div className="font-medium text-red-600">
-                        Whoops! Terjadi kesalahan.
-                    </div>
-                    <ul className="mt-3 list-disc list-inside text-sm text-red-600">
-                        {error}
-                    </ul>
-                </div>
-            )
-        }
-    }
 
     const getResetPassword = async signature =>{
         setIsAvailable(false)
 
         try {
             const response = await axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/reset-password`,{params: {signature}});
-            if(response.data.error) return setErrors(response.data.error)
-            if(!response.data.email) return setErrors('Email tidak ditemukan')
+            if(response.data.error) return setNotifs([response.data.error])
+            if(!response.data.email) return setNotifs(['Email tidak ditemukan'])
             
             setEmail(response.data.email)
             setIsAvailable(true)
             setFormData({...formData,['email']:response.data.email})
         } catch (error) {
-            setErrors(error.message)
+            setNotifs([error.message])
         }
     }
 
     const handleSubmit = async e => {
         e.preventDefault()
+        setIsSubmit(true)
         
         try {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/reset-password`,formData);
-            if(response.data.error) return setErrors(response.data.error)
-            return <Navigate to="/signin"/>
-        } catch (error) {
-            return setErrors(error.message)
-        }
+            if(response.data.error) {
+                setIsSubmit(false)
+                return setNotifs([response.data.error])
+            }
 
+            setIsNotifSuccess(true)
+            setIsAvailable(false)
+            setNotifs('Reset password berhasil')
+            setTimeout(() => navigate('/signin'), 2000);
+            
+        } catch (error) {
+            setIsSubmit(false)
+            setNotifs([error.message])
+        }
     }
 
     const handleChange = e => {
         const {name, value} = e.target
         setFormData({...formData,[name]:value})
     }
+
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -72,7 +73,7 @@ export default function ResetPassword() {
             </div>
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <Validation error={errors} />
+                    <AuthNotification notifs={notifs} isSuccess={isNotifSuccess}/>
                     { 
                         isAvailable ? 
                             <form className="space-y-5" onSubmit={handleSubmit}>
@@ -101,17 +102,34 @@ export default function ResetPassword() {
                                     </div>
                                 </div>
                                 <div>
+                                {
+                                    !isSubmit ?
                                     <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                         Atur ulang kata sandi
                                     </button>
+                                    :
+                                    <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 items-center bg-indigo-300 hover:bg-indigo-300 focus:ring-indigo-100">
+                                        <span className="flex btnDisabled">
+                                            <span style={{ paddingRight: 50 }}>Tunggu sebentar</span>
+                                            <img src="https://ayopppk.com/assets/loading/Pulse-1s-200px.svg" className={style.transform} alt="" />
+                                        </span>
+                                    </button>
+                                }
                                 </div>
                             </form>
                         :
                         <div className="text-sm text-center">
                             <br /><br />
-                            <Link to="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                Atur ulang password!
-                            </Link>
+                            {
+                                isNotifSuccess ?
+                                <Link to="/signin" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                    Masuk Sekarang!
+                                </Link>
+                                :
+                                <Link to="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                    Atur ulang password!
+                                </Link>
+                            }
                         </div>
                     }
                     

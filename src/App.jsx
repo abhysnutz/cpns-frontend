@@ -11,15 +11,17 @@ import Logout from './pages/authentication/Logout';
 import AppAccount from './pages/app/Account';
 import ForgotPassword from './pages/authentication/ForgotPassword';
 import ResetPassword from './pages/authentication/ResetPassword';
-// import jwt from 'jsonwebtoken'
+import NotFound from './components/NotFound';
+
 function App() {
     const Home = () => {
         return (<h1>Hello Home</h1>);
     }
-    
+
     return (
         <Router>
             <Routes>
+                <Route path='*' element={<NotFound/>}/>
                 <Route path="/" element={<Home/>}/>
 
                 {/* START AUTHENTIKASI */}
@@ -38,6 +40,8 @@ function App() {
                     <Route path="/app/verify-email" element={<ProtectedRoute element={<AppVerify />} />}/>
                 </Route>
                 {/* END APP */}
+
+                {/* 404 */}
             </Routes>
         </Router>
     )

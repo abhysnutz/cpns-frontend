@@ -1,58 +1,40 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import style from './Signup.module.css'
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import AuthNotification from '../../components/app/authentication/Notification';
 
 export default function ForgotPassword() {
     const [formData, setFormData] = useState({})
     const [isSubmit, setIsSubmit] = useState(false);
-    const [errors, setErrors] = useState([])
-    const [success, setSuccess] = useState([])
-    const [messages, setMessages] = useState([])
+    const [notifs, setNotifs] = useState([]);
+    const [isNotifSuccess, setIsNotifSuccess] = useState(false);
+    const [email, setEmail] = useState('')
+    const navigate = useNavigate();
 
-    const Notification = ({notif}) => {
-        if(messages.length){
-            return (
-                <div className="font-medium text-sm text-green-600 mb-4">
-                    {messages}
-                </div>
-            )
-        }
-    }
-
-    const Validation = ({error}) => {
-        if(error.length){
-            return (
-                <div className="mb-4">
-                    <div className="font-medium text-red-600">
-                        Whoops! Terjadi kesalahan.
-                    </div>
-                    <ul className="mt-3 list-disc list-inside text-sm text-red-600">
-                        {error.map((err,index) => (
-                            <li key={index}>{err}</li>
-                        ))}
-                    </ul>
-                </div>
-            )
-        }
-    }
+    useEffect(() => {
+        if (localStorage.getItem('token')) navigate('/app')
+    })
 
     const handleSubmit = async e => {
         e.preventDefault()
         setIsSubmit(true)
-        setMessages([])
-        setErrors([])
+        setNotifs([])
+        setIsNotifSuccess(false)
+
         try {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/forgot-password`,formData);
             if(response.data.error.length) {
                 setIsSubmit(false)
-                return setErrors(response.data.error)
+                return setNotifs(response.data.error)
             }else{
                 setIsSubmit(false)
-                setMessages(['Email reset password telah kami kirim. Jangan lupa periksa tab spam juga, ya!'])
+                setIsNotifSuccess(true)
+                setEmail('')
+                setNotifs(['Email reset password telah kami kirim. Jangan lupa periksa tab spam juga, ya!'])
             }
         } catch (err) {
-            setErrors([err.message])
+            setNotifs([err.message])
             setIsSubmit(false)
         }
     }
@@ -60,6 +42,7 @@ export default function ForgotPassword() {
     const handleChange = (e) => {
         const {name,value} = e.target
         setFormData({...formData,[name]:value})
+        setEmail(value)
     }
 
     return (
@@ -72,26 +55,14 @@ export default function ForgotPassword() {
             </div>
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    {/* <div className="font-medium text-sm text-green-600 mb-4">
-                        Email reset password telah kami kirim. Jangan lupa periksa tab spam juga, ya!
-                    </div>
-                    <div className="mb-4">
-                        <div className="font-medium text-red-600">
-                            Whoops! Terjadi kesalahan.
-                        </div>
-                        <ul className="mt-3 list-disc list-inside text-sm text-red-600">
-                            <li>Kami tidak dapat menemukan akun dengan alamat email tersebut.</li>
-                        </ul>
-                    </div> */}
-                    <Notification notif={messages} />
-                    <Validation error={errors} />
+                    <AuthNotification notifs={notifs} isSuccess={isNotifSuccess}/>
                     <form className="space-y-5" onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                                 Alamat Email
                             </label>
                             <div className="mt-1">
-                                <input id="email" name="email" type="email" autoComplete="email" onChange={handleChange} required className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
+                                <input id="email" name="email" type="email" autoComplete="email" onChange={handleChange} required value={email} className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"/>
                             </div>
                         </div>
                         <div className="flex items-center justify-between">

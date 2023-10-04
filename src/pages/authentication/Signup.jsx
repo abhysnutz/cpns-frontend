@@ -2,33 +2,18 @@ import React, { useEffect, useState } from 'react'
 import style from './Signup.module.css'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
+import AuthNotification from '../../components/app/authentication/Notification';
 
 export default function Signup() {
     const [formData, setFormData] = useState({'nama':'','email':'','password':'','referrer':''})
     const [isSubmit, setIsSubmit] = useState(false);
-    const [errors, setErrors] = useState([])
+    const [notifs, setNotifs] = useState([]);
+    const [isNotifSuccess, setIsNotifSuccess] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (localStorage.getItem('token')) navigate('/app')
     })
-
-    const Validation = ({error}) => {
-        if(error.length){
-            return (
-                <div className="mb-4">
-                    <div className="font-medium text-red-600">
-                        Whoops! Terjadi kesalahan.
-                    </div>
-                    <ul className="mt-3 list-disc list-inside text-sm text-red-600">
-                        {error.map((err,index) => (
-                            <li key={index}>{err}</li>
-                        ))}
-                    </ul>
-                </div>
-            )
-        }
-    }
 
     const handleChange = (e) => {
         const {name, value} = e.target
@@ -43,13 +28,13 @@ export default function Signup() {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/user`,formData);
             if(!response.data.success) {
                 setIsSubmit(false)
-                return setErrors(response.data.error)
+                return setNotifs(response.data.error)
             }else{
                 localStorage.setItem('token', response.data.token);
                 return navigate('/app/verify-email')
             }
         } catch (err) {
-            setErrors([err.message])
+            setNotifs([err.message])
             setIsSubmit(false)
         }
     }
@@ -64,7 +49,7 @@ export default function Signup() {
             </div>
             <div className="mt-8 sm:mx-auto w-full md:w-1/2">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <Validation error={errors} />
+                    <AuthNotification notifs={notifs} isSuccess={isNotifSuccess}/>
                     <form className="space-y-5 " onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <div>
@@ -85,7 +70,7 @@ export default function Signup() {
                             </div>
                             <div className="space-y-1">
                                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                Password
+                                    Password
                                 </label>
                                 <div className="mt-1">
                                     <input id="password" name="password" type="password" onChange={handleChange} autoComplete="password" required className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
@@ -93,7 +78,7 @@ export default function Signup() {
                             </div>
                             <div className="space-y-1">
                                 <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700">
-                                Ulangi password
+                                    Ulangi password
                                 </label>
                                 <div className="mt-1">
                                     <input id="password_confirmation" name="password_confirmation" type="password" onChange={handleChange} autoComplete="password_confirmation" required className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
