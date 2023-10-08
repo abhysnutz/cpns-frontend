@@ -6,7 +6,7 @@ import VerifyMail from './pages/authentication/VerifyMail';
 import LayoutUser from './pages/app/Layout';
 import AppVerify from './pages/app/Verify';
 import AppHome from './pages/app/Home';
-import ProtectedRoute from './utils/protectedRoute';
+import ProtectedRoute from './utils/ProtectedRoute';
 import Logout from './pages/authentication/Logout';
 import AppAccount from './pages/app/Account';
 import ForgotPassword from './pages/authentication/ForgotPassword';
