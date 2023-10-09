@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Useless() {
+export default function BottomMenu() {
     return (
         <div className="fixed inset-x-0 bottom-0 z-40 sm:hidden">
             <div className="bg-white shadow-md border">

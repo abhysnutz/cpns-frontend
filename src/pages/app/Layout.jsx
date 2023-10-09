@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Sidebar from '../../components/app/Sidebar'
-import Useless from '../../components/app/Useless'
+import BottomMenu from '../../components/app/BottomMenu'
 import Header from '../../components/app/Header'
 import MobileMenu from '../../components/app/MobileMenu'
 
@@ -15,7 +15,7 @@ export default function Layout() {
     return (
         <div>
             <div className="h-screen flex overflow-hidden bg-gray-100">
-                {/* <Useless/> */}
+                <BottomMenu/>
                 <div className="lg:hidden" style={{ display:isMenuAvailable }}>
                     <MobileMenu onStateChange={handleClick}/>
                 </div>
