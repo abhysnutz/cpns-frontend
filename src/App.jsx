@@ -7,7 +7,6 @@ import LayoutUser from './pages/app/Layout';
 import AppVerify from './pages/app/Verify';
 import AppHome from './pages/app/Home';
 import ProtectedRoute from './utils/ProtectedRoute';
-import Logout from './pages/authentication/Logout';
 import AppAccount from './pages/app/Account';
 import ForgotPassword from './pages/authentication/ForgotPassword';
 import ResetPassword from './pages/authentication/ResetPassword';
@@ -26,7 +25,6 @@ function App() {
 
                 {/* START AUTHENTIKASI */}
                 <Route path="/signin" element={<Signin/>}/>
-                
                 <Route path="/signup" element={<Signup/>}/>
                 <Route path="/forgot-password" element={<ForgotPassword/>}/>
                 <Route path="/reset-password/:signature" element={<ResetPassword/>}/>

@@ -1,15 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { GetUser } from '../../api/ApiUser.mjs'
 
 export default function Header({onStateChange}) {
     const [isMenu, setIsMenu] = useState(false)
+    const [avatar, setAvatar] = useState('')
     const navigate = useNavigate()
     const handleClick = () => setIsMenu(!isMenu)
+
+    useEffect(() => {
+        setupAvatar()
+    },[])
 
     const handleLogout = () => {
         localStorage.removeItem('token')
         navigate('/')
     }
+
+    const setupAvatar = async () => {
+        const user = await GetUser();
+        setAvatar(`https://ui-avatars.com/api/?name=${user.name}&background=6366f1&color=fff`)
+    }
+
     return (
         <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
             <button className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 lg:hidden sm:flex sm:items-center hidden" onClick={onStateChange}>
@@ -28,7 +40,7 @@ export default function Header({onStateChange}) {
                         <div>
                             <button id="user-menu" aria-haspopup="true" className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={handleClick}>
                                 <span className="sr-only">Open user menu</span>
-                                <img src="https://ui-avatars.com/api/?name=zxczxczxc&amp;background=6366f1&amp;color=fff" alt="" className="h-8 w-8 rounded-full" />
+                                <img src={avatar} alt="" className="h-8 w-8 rounded-full" />
                             </button>
                         </div>
                         {
