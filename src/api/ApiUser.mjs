@@ -15,7 +15,5 @@ export const GetUser = async () => {
         return response.data.data
     } catch (error) {
         console.log(error.message);
-        // localStorage.removeItem('token');
-        // navigate("/")
     }
 }

@@ -11,10 +11,8 @@ export default async function TokenVerify() {
     try {
         const signature = token.split('.')[2]
         const decoded = jwt_decode(token);
-
         const response = await axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/api/auth/session-verify`,{userId:decoded.userId, token:signature});
         
-        console.log(response.data);
         if(!response.data.session){
             localStorage.removeItem('token')
             location.reload()
